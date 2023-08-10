@@ -47,12 +47,12 @@ def test_stationarity(series):
         else:
             print('Non-stationary; no robust conclusions')
 
-def auto_correlation_plot(series):
+def auto_correlation_plot(series, num_of_lags):
     """
     Plots autocorrelations for a given series.
     """
-    plt.figure(figsize=(10, 2), dpi=200)
-    plot_acf(series, zero=False, lags=25)
+    plt.figure(figsize=(10, 2), dpi=100)
+    plot_acf(series, zero=False, lags=num_of_lags)
     plt.xlabel('Number of lags')
     plt.ylabel('Autocorrelation')
     plt.show()
@@ -61,12 +61,20 @@ def partial_auto_correlation_plot(series):
     """
     Plots partial autocorrelations for a given series.
     """
-    plt.figure(figsize=(10, 2), dpi=200)
+    plt.figure(figsize=(10, 2), dpi=100)
     plot_pacf(series, zero=False, lags=25)
     plt.xlabel('Number of lags')
     plt.ylabel('Partial autocorrelation')
     plt.show()
 
+def create_lagged_features(df, number_of_lags):
+    lags = list(range(1, number_of_lags+1))
+    
+    for lag in lags:
+        column_name = 'lag_' + str(lag)
+        df[column_name] = df['remainder'].shift(lag)
+        
+    return df
 
 def harmonic_transformer(frequency=1/365.24):
     sin_transformer = (
